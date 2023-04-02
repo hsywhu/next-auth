@@ -1,13 +1,14 @@
 import Link from "next/link"
-import { useSession } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 import styles from "./header.module.css"
+import useSignOut from "../hooks/useSignOut"
 
 // The approach used in this component shows how to built a sign in and sign out
 // component that works on pages which support both client and server side
 // rendering, and avoids any flash incorrect content on initial page load.
 export default function Header() {
   const { data: session, status } = useSession()
-
+  const signOut = useSignOut();
   return (
     <header>
       <noscript>
@@ -24,7 +25,7 @@ export default function Header() {
               <span className={styles.notSignedInText}>
                 You are not signed in
               </span>
-              <a href="/api/auth/signin" className={styles.buttonPrimary}>
+              <a onClick={() => {signIn('keycloak')}} className={styles.buttonPrimary}>
                 Sign in
               </a>
             </>
@@ -40,7 +41,7 @@ export default function Header() {
                 <strong>{session.user.email} </strong>
                 {session.user.name ? `(${session.user.name})` : null}
               </span>
-              <a href="/api/auth/signout" className={styles.button}>
+              <a onClick={signOut} className={styles.button}>
                 Sign out
               </a>
             </>
